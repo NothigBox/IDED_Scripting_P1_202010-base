@@ -2,6 +2,9 @@
 {
     public class Unit
     {
+        public const int VALOR_MAX = 255;
+        public const int VALOR_MIN = 0;
+
         public int BaseAtk { get; protected set; }
         public int BaseDef { get; protected set; }
         public int BaseSpd { get; protected set; }
@@ -30,13 +33,76 @@
             MoveRange = _moveRange;
         }
 
+        public void BaseAdds()
+        {
+            switch (UnitClass)
+            {
+                case EUnitClass.Dragon:
+                    BaseAtkAdd = 5 / 100;
+                    BaseDefAdd = 3 / 100;
+                    BaseSpdAdd = 2 / 100;
+                    break;
+                case EUnitClass.Imp:
+                    BaseAtkAdd = 1 / 100;
+                    BaseDefAdd = 0 / 100;
+                    BaseSpdAdd = 0 / 100;
+                    break;
+                case EUnitClass.Mage:
+                    BaseAtkAdd = 3 / 100;
+                    BaseDefAdd = 1 / 100;
+                    BaseSpdAdd = -1 / 100;
+                    break;
+                case EUnitClass.Orc:
+                    BaseAtkAdd = 4 / 100;
+                    BaseDefAdd = 2 / 100;
+                    BaseSpdAdd = -2 / 100;
+                    break;
+                case EUnitClass.Ranger:
+                    BaseAtkAdd = 1 / 100;
+                    BaseDefAdd = 0 / 100;
+                    BaseSpdAdd = 3 / 100;
+                    break;
+                case EUnitClass.Soldier:
+                    BaseAtkAdd = 3 / 100;
+                    BaseDefAdd = 2 / 100;
+                    BaseSpdAdd = 1 / 100;
+                    break;
+                case EUnitClass.Squire:
+                    BaseAtkAdd = 2 / 100;
+                    BaseDefAdd = 1 / 100;
+                    BaseSpdAdd = 0 / 100;
+                    break;
+                case EUnitClass.Villager:
+                    BaseAtkAdd = 0 / 100;
+                    BaseDefAdd = 0 / 100;
+                    BaseSpdAdd = 0 / 100;
+                    break;
+            }
+            
+
+            BaseAtk = Clamp(BaseAtk + BaseAtkAdd *BaseAtk);
+            BaseDef = Clamp(BaseDef + BaseDefAdd * BaseDef);
+            BaseSpd = Clamp(BaseSpd + BaseSpdAdd * BaseSpd);
+        }
+
         public virtual bool Interact(Unit otherUnit)
         {
             return false;
         }
 
-        public virtual bool Interact(Prop prop) => false;
+        public virtual bool Interact(Prop prop)
+        {
+            if (UnitClass == EUnitClass.Villager) return true;
+            else return false;
+        }
 
         public bool Move(Position targetPosition) => false;
+
+        public int Clamp(float val)
+        {
+            if (val < VALOR_MIN) return VALOR_MIN;
+            else if (val > VALOR_MAX) return VALOR_MAX;
+            else return (int)val;
+        }
     }
 }
